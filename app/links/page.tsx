@@ -1,46 +1,18 @@
-import { notion } from "@/lib/notion";
-import {
-  getCheckbox,
-  getNumber,
-  getRichText,
-  getTitle,
-  getUrl,
-  isFullPage,
-} from "@/lib/notion-utils";
+import { getLinks } from "@/service/links";
+import { getLinksSettings } from "@/service/linksSettings";
 
 export default async function LinksPage() {
-  const response = await notion.dataSources.query({
-    data_source_id: process.env.NOTION_LINKS_BUTTONS_DB!,
-  });
-
-  const links = response.results
-    .filter(isFullPage)
-    .map((item) => {
-      const properties = item.properties;
-
-      return {
-        title: getTitle(properties["Título"]),
-        description: getRichText(properties["Descrição"]),
-        url: getUrl(properties["URL"]),
-        icon: getRichText(properties["Ícone"]),
-        order: getNumber(properties["Ordem"]),
-        active: getCheckbox(properties["Ativo"]),
-        featured: getCheckbox(properties["Destaque"]),
-      };
-    });
-
-  const activeLinks = links
-    .filter((link) => link.active)
-    .sort((a, b) => a.order - b.order);
-
-  console.log(activeLinks);
+  const settings = await getLinksSettings();
+  const activeLinks = await getLinks();
 
   return (
     <main>
-      <h1>Links</h1>
+      <h1>{settings?.title}</h1>
+      <p>{settings?.subtitle}</p>
+      <p>{settings?.description}</p>
 
       <ul>
-        {activeLinks.map((link) => (
+        {(activeLinks ?? []).map((link) => (
           <li key={link.title}>
             <a href={link.url} target="_blank" rel="noopener noreferrer">
               <strong>{link.title}</strong>
