@@ -1,18 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Bebas_Neue, PT_Sans } from "next/font/google";
+import "./globals.scss";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+export const bebasNeue = Bebas_Neue({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-bebas",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+export const ptSans = PT_Sans({
+  weight: ["400", "700"],
   subsets: ["latin"],
+  variable: "--font-pt-sans",
 });
 
-export const metadata:Metadata = {
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.VERCEL_URL ??
+  "http://localhost:3000";
+
+const metadataBase = new URL(
+  siteUrl.startsWith("http") ? siteUrl : `https://${siteUrl}`,
+);
+
+export const metadata: Metadata = {
+  metadataBase,
+
   title: {
     default: "Alef Rodrigues | Nutricionista",
     template: "%s | Alef Rodrigues",
@@ -78,7 +91,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bebasNeue.variable} ${ptSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
