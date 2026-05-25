@@ -11,29 +11,43 @@ export function isFullPage(item: DataSourceResult): item is PageObjectResponse {
   return item.object === "page" && "properties" in item;
 }
 
-export function getTitle(property: NotionProperties[string]) {
+export function getTitle(property?: NotionProperties[string]) {
+  if (!property || !("type" in property)) return "";
   if (property.type !== "title") return "";
   return property.title[0]?.plain_text ?? "";
 }
 
-export function getRichText(property: NotionProperties[string]) {
+export function getRichText(property?: NotionProperties[string]) {
+  if (!property || !("type" in property)) return "";
   if (property.type !== "rich_text") return "";
   return property.rich_text[0]?.plain_text ?? "";
 }
 
-export function getCheckbox(property: NotionProperties[string]) {
+export function getCheckbox(property?: NotionProperties[string]) {
+  if (!property || !("type" in property)) return false;
   if (property.type !== "checkbox") return false;
   return property.checkbox ?? false;
 }
 
-export function getNumber(property: NotionProperties[string]) {
+export function getNumber(property?: NotionProperties[string]) {
+  if (!property || !("type" in property)) return 0;
   if (property.type !== "number") return 0;
   return property.number ?? 0;
 }
 
-export function getUrl(property: NotionProperties[string]) {
+export function getUrl(property?: NotionProperties[string]) {
+  if (!property || !("type" in property)) return "";
   if (property.type === "url") return property.url ?? "";
   if (property.type === "rich_text")
     return property.rich_text[0]?.plain_text ?? "";
   return "";
+}
+
+export function getSelect(
+  property?: NotionProperties[string],
+  defaultValue: string | null = null,
+) {
+  if (!property || !("type" in property)) return defaultValue;
+  if (property.type !== "select") return null;
+  return property.select?.name ?? defaultValue;
 }

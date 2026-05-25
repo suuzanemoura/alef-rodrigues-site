@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-:root {
   --font-title: var(--font-bebas);
   --font-body: var(--font-pt-sans);
 
@@ -13,16 +8,23 @@
   --foreground: #171717;
 
   --primary: #23b2f9;
-  --primary-hover: #1a8ac2;
+  --primary-dark: #1a8ac2;
   --primary-active: #166a8c;
 
   --secondary: #051735;
+  --secondary-dark: #030a1b;
   --secondary-hover: #040f25;
-  --secondary-active: #030a1b;
 
   --support: #cd0001;
   --support-hover: #a40000;
   --support-active: #7a0000;
+
+  // --brand-primary: #e0f2fe;
+  // --brand-accent: #23B2F9;
+  // --brand-red: #f87171;
+  // --brand-primary-light: #1e293b;
+  // --brand-accent-light: #0c4a6e;
+  // --brand-accent-surface: #0e2a4d;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -31,13 +33,15 @@
   --font-bebas: var(--font-bebas);
   --font-pt: var(--font-pt-sans);
   --color-background: var(--background);
+  --color-background-surface: var(--background-surface);
   --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
+  --color-primary-dark: var(--primary-dark);
   --color-primary-active: var(--primary-active);
 
   --color-secondary: var(--secondary);
+  --color-secondary-dark: var(--secondary-dark);
   --color-secondary-hover: var(--secondary-hover);
   --color-secondary-active: var(--secondary-active);
 
@@ -47,8 +51,8 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }
 
 @layer base {

@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
+
 import { getLinksSettings } from "../../service/linksSettings";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const settings = await getLinksSettings();
 
   const seoTitle = settings?.seoTitle ?? "Links | Alef Rodrigues";
