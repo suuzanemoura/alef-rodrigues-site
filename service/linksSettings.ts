@@ -1,7 +1,20 @@
 import { notion } from "@/lib/notion";
-import { isFullPage } from "../lib/notion-utils";
+import { getRichText, getSelect, isFullPage } from "../lib/notion-utils";
 
-export async function getLinksSettings() {
+type Theme = "light" | "dark" | "system";
+
+export interface LinksSettings {
+  title: string;
+  subtitle: string;
+  description: string;
+  avatar: string;
+  theme: Theme;
+  seoTitle: string;
+  seoDescription: string;
+  openGraphTitle: string;
+}
+
+export async function getLinksSettings(): Promise<LinksSettings | null> {
   const response = await notion.dataSources.query({
     data_source_id: process.env.NOTION_LINKS_SETTINGS_DB!,
   });
@@ -27,38 +40,15 @@ export async function getLinksSettings() {
         : "";
 
   return {
-    title:
-      properties["Título"]?.type === "rich_text"
-        ? properties["Título"].rich_text[0]?.plain_text
-        : "",
-
-    subtitle:
-      properties["Subtítulo"]?.type === "rich_text"
-        ? properties["Subtítulo"].rich_text[0]?.plain_text
-        : "",
-
-    description:
-      properties["Descrição"]?.type === "rich_text"
-        ? properties["Descrição"].rich_text[0]?.plain_text
-        : "",
+    title: getRichText(properties["Título"]),
+    subtitle: getRichText(properties["Subtítulo"]),
+    description: getRichText(properties["Descrição"]),
     avatar,
-    theme:
-      properties["Tema"]?.type === "select"
-        ? properties["Tema"].select?.name
-        : "dark",
-    seoTitle:
-      properties["SEO Título"]?.type === "rich_text"
-        ? properties["SEO Título"].rich_text[0]?.plain_text
-        : "",
+    theme: getSelect(properties["Tema"], "dark") as Theme,
+    seoTitle: getRichText(properties["SEO Título"]),
 
-    seoDescription:
-      properties["SEO Descrição"]?.type === "rich_text"
-        ? properties["SEO Descrição"].rich_text[0]?.plain_text
-        : "",
-    openGraphTitle:
-      properties["Open Graph Título"]?.type === "rich_text"
-        ? properties["Open Graph Título"].rich_text[0]?.plain_text
-        : "",
+    seoDescription: getRichText(properties["SEO Descrição"]),
+    openGraphTitle: getRichText(properties["Open Graph Título"]),
   };
 }
 

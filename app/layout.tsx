@@ -83,7 +83,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -91,6 +91,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
+      suppressHydrationWarning
       className={`${bebasNeue.variable} ${ptSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
