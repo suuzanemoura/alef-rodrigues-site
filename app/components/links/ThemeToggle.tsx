@@ -1,21 +1,17 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useSyncExternalStore } from "react";
-
-function useMounted() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
-}
+import { useEffect, useState } from "react";
+import { useTheme } from "@/providers/ThemeProvider";
 
 export function ThemeToggle() {
-  const mounted = useMounted();
+  const [mounted, setMounted] = useState(false);
 
   const { resolvedTheme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return <div className="fixed right-4 top-4 h-10 w-10" />;
