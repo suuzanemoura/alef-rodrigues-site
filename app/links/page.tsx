@@ -5,6 +5,8 @@ import { ThemeToggle } from "../components/links/ThemeToggle";
 import { LinkButton } from "../components/links/LinkButton";
 export { generateMetadata } from "./metadata";
 
+export const revalidate = 60;
+
 export default async function LinksPage() {
   const settings = await getLinksSettings();
   const activeLinks = await getLinks();
