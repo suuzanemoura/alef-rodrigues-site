@@ -4,12 +4,24 @@ import { getLinksSettings } from "@/service/linksSettings";
 import { ThemeToggle } from "../components/links/ThemeToggle";
 import { LinkButton } from "../components/links/LinkButton";
 export { generateMetadata } from "./metadata";
+import { isInstagramBrowser } from "@/lib/isInstagramBrowser";
+import { headers } from "next/headers";
 
 export const revalidate = 60;
 
 export default async function LinksPage() {
   const settings = await getLinksSettings();
-  const activeLinks = await getLinks();
+  const links = await getLinks();
+  const ua = (await headers()).get("user-agent") ?? undefined;
+  const isInstagram = isInstagramBrowser(ua);
+
+  const filteredLinks = (links ?? []).filter((link) => {
+    return !(isInstagram && link.icon === "instagram");
+  });
+
+  console.log("User Agent:", ua);
+  console.log("Is Instagram Browser:", isInstagram);
+  console.log("Filtered Links:", filteredLinks);
 
   return (
     <main className="relative min-h-dvh bg-gradient-to-br from-[#d1dbed] to-[#e0e9ef] text-foreground dark:bg-background flex flex-col items-center w-full dark:bg-gradient-to-br dark:from-secondary-hover dark:via-secondary dark:to-secondary-dark bg-cover bg-center bg-no-repeat">
@@ -32,7 +44,7 @@ export default async function LinksPage() {
         className="mx-auto w-full px-5 max-w-[440px] mt-9 mb-8"
       >
         <ul className="flex flex-col gap-4">
-          {(activeLinks ?? []).map((link) => (
+          {(filteredLinks ?? []).map((link) => (
             <LinkButton key={link.id} link={link} />
           ))}
         </ul>

@@ -1,12 +1,12 @@
 import { LinkItem } from "@/service/links";
-import { ArrowUpRight, Info, Music2, MapPin, Stethoscope } from "lucide-react";
-import { FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { ArrowUpRight, Info, MapPin, Stethoscope } from "lucide-react";
+import { FaInstagram, FaWhatsapp, FaTiktok } from "react-icons/fa";
 
 const iconMap = {
   nutrium: Stethoscope,
   whatsapp: FaWhatsapp,
   instagram: FaInstagram,
-  tiktok: Music2,
+  tiktok: FaTiktok,
   mapa: MapPin,
   info: Info,
   default: ArrowUpRight,
