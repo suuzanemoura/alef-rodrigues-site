@@ -26,13 +26,6 @@ function resolveTheme(theme: Theme): ResolvedTheme {
   return theme === "system" ? getSystemTheme() : theme;
 }
 
-function applyTheme(theme: Theme) {
-  if (typeof document === "undefined") return;
-
-  const resolvedTheme = resolveTheme(theme);
-  document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
-}
-
 export function ThemeProvider({
   children,
   defaultTheme,
@@ -40,32 +33,37 @@ export function ThemeProvider({
   children: React.ReactNode;
   defaultTheme: Theme;
 }) {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme);
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
-    resolveTheme(defaultTheme),
-  );
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === "undefined") {
+      return defaultTheme;
+    }
 
-  useEffect(() => {
     const storedTheme = window.localStorage.getItem(
       STORAGE_KEY,
     ) as Theme | null;
-    const initialTheme =
+
+    if (
       storedTheme === "light" ||
       storedTheme === "dark" ||
       storedTheme === "system"
-        ? storedTheme
-        : defaultTheme;
+    ) {
+      return storedTheme;
+    }
 
-    setThemeState(initialTheme);
-    setResolvedTheme(resolveTheme(initialTheme));
-    applyTheme(initialTheme);
+    return defaultTheme;
+  });
 
-    if (initialTheme !== "system") return;
+  const resolvedTheme = resolveTheme(theme);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEY, theme);
+
+    if (theme !== "system") return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
     const handleChange = () => {
-      setResolvedTheme(resolveTheme("system"));
-      applyTheme("system");
+      setThemeState("system");
     };
 
     mediaQuery.addEventListener("change", handleChange);
@@ -73,12 +71,6 @@ export function ThemeProvider({
     return () => {
       mediaQuery.removeEventListener("change", handleChange);
     };
-  }, [defaultTheme]);
-
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, theme);
-    setResolvedTheme(resolveTheme(theme));
-    applyTheme(theme);
   }, [theme]);
 
   const value = useMemo(
