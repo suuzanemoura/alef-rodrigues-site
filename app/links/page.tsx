@@ -9,19 +9,26 @@ import { headers } from "next/headers";
 
 export const revalidate = 60;
 
-export default async function LinksPage() {
+type LinksPageProps = {
+  searchParams?: Promise<{
+    utm_source?: string | string[];
+  }>;
+};
+
+export default async function LinksPage({ searchParams }: LinksPageProps) {
   const settings = await getLinksSettings();
   const links = await getLinks();
   const ua = (await headers()).get("user-agent") ?? undefined;
-  const isInstagram = isInstagramBrowser(ua);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const utmSource = Array.isArray(resolvedSearchParams?.utm_source)
+    ? resolvedSearchParams?.utm_source[0]
+    : resolvedSearchParams?.utm_source;
+  const isInstagram =
+    isInstagramBrowser(ua) || utmSource?.toLowerCase() === "ig";
 
   const filteredLinks = (links ?? []).filter((link) => {
     return !(isInstagram && link.icon === "instagram");
   });
-
-  console.log("User Agent:", ua);
-  console.log("Is Instagram Browser:", isInstagram);
-  console.log("Filtered Links:", filteredLinks);
 
   return (
     <main className="relative min-h-dvh bg-gradient-to-br from-[#d1dbed] to-[#e0e9ef] text-foreground dark:bg-background flex flex-col items-center w-full dark:bg-gradient-to-br dark:from-secondary-hover dark:via-secondary dark:to-secondary-dark bg-cover bg-center bg-no-repeat">
